@@ -1,0 +1,11 @@
+{
+  "name": "ev-charger",
+  "version": "1.0.0",
+  "description": "ev-charger monorepo",
+  "main": "index.js",
+  "repository": "https://github.com/leHomard/ev-charger.git",
+  "author": "omar Harras",
+  "license": "MIT",
+  "private": true,
+  "workspaces": ["applications/*", "packages/*"]
+}
