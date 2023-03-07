@@ -1,0 +1,64 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  firstName        String            @db.VarChar(255)
+  lastName         String            @db.VarChar(255)
+  email            String            @unique @db.VarChar(255)
+  Profile          Profile[]
+  chargingStations ChargingStation[]
+}
+
+model Profile {
+  id     String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  User   User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String      @db.Uuid
+  type   ProfileType
+}
+
+model ChargingStation {
+  id            String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  type          ChargingStationType
+  address       Address             @relation(fields: [addressId], references: [id])
+  addressId     String              @db.Uuid
+  User          User?               @relation(fields: [userId], references: [id])
+  userId        String?             @db.Uuid
+  coordinates   Coordinates         @relation(fields: [coordinatesId], references: [id])
+  coordinatesId String              @db.Uuid
+}
+
+model Coordinates {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  latitude        String
+  longitude       String
+  ChargingStation ChargingStation[]
+}
+
+model Address {
+  id              String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  city            String
+  zipCode         String
+  streetName      String
+  ChargingStation ChargingStation[]
+}
+
+enum ProfileType {
+  PROVIDER
+  CLAIMANT
+}
+
+enum ChargingStationType {
+  CHADEMO
+  TYPE_1
+  TYPE_2
+  TYPE_3C
+  DOMESTIC_EU
+  COMBO_CCS_EU
+}
